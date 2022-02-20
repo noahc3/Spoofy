@@ -14,8 +14,11 @@ namespace SpoofyAPI.Controllers {
 
         [Authorize(Policy = "Spotify")]
         [HttpGet("login")]
-        public StatusCodeResult Login() {
-            return Ok();
+        public ContentResult Login() {
+            return new ContentResult {
+                ContentType = "text/html",
+                Content = "<body> <script type='text/javascript'> window.close(); </script> </body>"
+            };
         }
     }
 }

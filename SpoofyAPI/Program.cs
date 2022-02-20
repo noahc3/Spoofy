@@ -38,26 +38,17 @@ builder.Services.AddAuthentication(options => {
     options.Scope.Add(string.Join(",", scopes));
 });
 
-
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-var scheme = new OpenApiSecurityScheme {
-    Name = "Spotify OAuth2",
-    Type = SecuritySchemeType.OAuth2,
-    In = ParameterLocation.Cookie,
-    Flows = new OpenApiOAuthFlows {
-        AuthorizationCode = new OpenApiOAuthFlow {
-            AuthorizationUrl = new Uri("/authentication/login", UriKind.Relative)
-        }
-    }
-};
-
-
 builder.Services.AddSwaggerGen(options => {
-    options.AddSecurityDefinition("Spotify", scheme);
-    options.OperationFilter<SecureEndpointAuthRequirementFilter>();
+    options.SwaggerDoc("v1", new OpenApiInfo {
+        Version = "v1",
+        Title = "SpoofyAPI",
+        Description = "Authenticate: <a target='_blank' href='/authentication/login'>click here</a>"
+    });
 });
 
 var app = builder.Build();
@@ -81,26 +72,3 @@ app.UseAuthentication();
 app.MapControllers();
 
 app.Run();
-
-internal class SecureEndpointAuthRequirementFilter : IOperationFilter {
-    public void Apply(OpenApiOperation operation, OperationFilterContext context) {
-        if (!context.ApiDescription
-            .ActionDescriptor
-            .EndpointMetadata
-            .OfType<AuthorizeAttribute>()
-            .Any()) {
-            return;
-        }
-
-        operation.Security = new List<OpenApiSecurityRequirement>
-        {
-            new OpenApiSecurityRequirement
-            {
-                [new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "token" }
-                }] = new List<string>()
-            }
-        };
-    }
-}
