@@ -1,10 +1,8 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 using SpoofyAPI;
+using SpoofyAPI.Middleware;
 using SpotifyAPI.Web;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using static SpotifyAPI.Web.Scopes;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,61 +12,78 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton(SpotifyClientConfig.CreateDefault());
 builder.Services.AddScoped<SpotifyClientBuilder>();
 
-// Configure Spotify authentication
-builder.Services.AddAuthorization(options => {
-    options.AddPolicy("Spotify", policy => {
-        policy.AuthenticationSchemes.Add("Spotify");
-        policy.RequireAuthenticatedUser();
-    });
-});
-
-builder.Services.AddAuthentication(options => {
-    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-}).AddCookie(options => {
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(50);
-}).AddSpotify(options => {
-    options.ClientId = builder.Configuration["Spotify:ClientID"];
-    options.ClientSecret = builder.Configuration["Spotify:ClientSecret"];
-    options.SaveTokens = true;
-
-    var scopes = new List<string>() {
-        UserReadEmail, PlaylistModifyPrivate, PlaylistReadPrivate
-    };
-
-    options.Scope.Add(string.Join(",", scopes));
-});
-
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
+// Configure Swagger authentication
+var scheme = new OpenApiSecurityScheme {
+    Name = "oauth2",
+    Type = SecuritySchemeType.OAuth2,
+    In = ParameterLocation.Query,
+    Scheme = "oauth2",
+    Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" },
+    Flows = new OpenApiOAuthFlows {
+        AuthorizationCode = new OpenApiOAuthFlow {
+            AuthorizationUrl = new Uri("/authentication/loginflowless", UriKind.Relative),
+            TokenUrl = new Uri("/authentication/tokenflowless", UriKind.Relative)
+        }
+    }
+};
+
 builder.Services.AddSwaggerGen(options => {
-    options.SwaggerDoc("v1", new OpenApiInfo {
-        Version = "v1",
-        Title = "SpoofyAPI",
-        Description = "Authenticate: <a target='_blank' href='/authentication/login'>click here</a>"
-    });
+    options.AddSecurityDefinition("oauth2", scheme);
+    options.OperationFilter<SecureEndpointAuthRequirementFilter>(scheme);
 });
+
+
+// Build app
 
 var app = builder.Build();
 
-// Fix OAuth against HTTP localhost
+// Register custom auth middleware
+app.UseMiddleware<SpotifyAuthMiddleware>();
+
+// Fix cookies against HTTP localhost
 if (app.Environment.IsDevelopment()) {
     app.UseCookiePolicy(new CookiePolicyOptions() {
         MinimumSameSitePolicy = SameSiteMode.Lax
     });
 }
 
-// Configure the HTTP request pipeline.
+// Configure Swagger UI
 if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options => {
+        options.OAuthClientId(builder.Configuration["Spotify:ClientId"]);
+        options.OAuthClientSecret(builder.Configuration["Spotify:ClientSecret"]);
+    });
 }
 
 app.UseAuthorization();
-app.UseAuthentication();
 
 app.MapControllers();
 
 app.Run();
+
+internal class SecureEndpointAuthRequirementFilter : IOperationFilter {
+    OpenApiSecurityScheme scheme;
+    public SecureEndpointAuthRequirementFilter(OpenApiSecurityScheme scheme) {
+        this.scheme = scheme;
+    }
+    public void Apply(OpenApiOperation operation, OperationFilterContext context) {
+        if (!context.ApiDescription
+            .ActionDescriptor
+            .EndpointMetadata
+            .OfType<SpotifyAuthAttribute>()
+            .Any()) {
+            return;
+        }
+
+        operation.Security.Add(new OpenApiSecurityRequirement()
+        {
+            [scheme] = new List<string>()
+        });
+    }
+}
