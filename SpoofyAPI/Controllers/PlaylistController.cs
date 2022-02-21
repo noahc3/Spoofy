@@ -27,6 +27,8 @@ namespace SpoofyAPI.Controllers {
                 parsedPlaylists.Add(new MetaPlaylist(p));
             }
 
+            Console.WriteLine((await c.UserProfile.Current()).DisplayName);
+
             return parsedPlaylists;
         }
 
@@ -51,7 +53,22 @@ namespace SpoofyAPI.Controllers {
                 }
             }
 
-            return new ShufflePreview(shuffle, delta);
+            return new ShufflePreview(mp.Id, shuffle, delta);
+        }
+
+        [SpotifyAuth]
+        [HttpPost("ApplyShuffle")]
+        public async Task<StatusCodeResult> ApplyShuffle([FromQuery] string playlistId, [FromBody] IList<int> delta) {
+            var c = HttpContext.GetSpotifyClient();
+            var tracks = await c.PaginateAll(await c.Playlists.GetItems(playlistId));
+
+            foreach (int pos in delta) {
+                Console.WriteLine(pos);
+                PlaylistReorderItemsRequest r = new PlaylistReorderItemsRequest(pos, tracks.Count);
+                await c.Playlists.ReorderItems(playlistId, r);
+            }
+
+            return Ok();
         }
     }
 }

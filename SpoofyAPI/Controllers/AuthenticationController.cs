@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using SpoofyAPI.Data;
 using SpotifyAPI.Web;
 using System.Linq;
 
@@ -8,6 +9,13 @@ namespace SpoofyAPI.Controllers {
     [ApiController]
     [Route("authentication")]
     public class AuthenticationController : Controller {
+        private static readonly string[] _scopes = new[] {
+            Scopes.PlaylistModifyPrivate,
+            Scopes.PlaylistReadPrivate,
+            Scopes.PlaylistReadCollaborative,
+            Scopes.PlaylistModifyPublic,
+        };
+
         private readonly ILogger<AuthenticationController> _logger;
 
         public AuthenticationController(ILogger<AuthenticationController> logger) {
@@ -21,7 +29,7 @@ namespace SpoofyAPI.Controllers {
                 configuration["Spotify:ClientID"],
                 LoginRequest.ResponseType.Code
             ) {
-                Scope = new[] { Scopes.UserReadEmail, Scopes.PlaylistModifyPrivate, Scopes.PlaylistReadPrivate },
+                Scope = _scopes,
                 State = redirect_uri.Base64Encode()
             };
 
@@ -60,15 +68,7 @@ namespace SpoofyAPI.Controllers {
                 client_id,
                 LoginRequest.ResponseType.Code
             ) {
-                Scope = new[] { 
-                    Scopes.UserReadEmail, 
-                    Scopes.PlaylistModifyPrivate, 
-                    Scopes.PlaylistReadPrivate, 
-                    Scopes.PlaylistReadCollaborative,
-                    Scopes.PlaylistModifyPublic,
-                    Scopes.UserLibraryRead,
-                    Scopes.UserLibraryModify
-                },
+                Scope = _scopes,
                 State = state
             };
 
@@ -91,6 +91,15 @@ namespace SpoofyAPI.Controllers {
             return new Dictionary<string, string>() {
                 ["access_token"] = JsonConvert.SerializeObject(response).Base64Encode()
             };
+        }
+
+        [SpotifyAuth]
+        [HttpGet("profile")]
+        public async Task<MetaUser> Profile() {
+            var c = HttpContext.GetSpotifyClient();
+            var user = await c.UserProfile.Current();
+
+            return new MetaUser(user);
         }
     }
 }

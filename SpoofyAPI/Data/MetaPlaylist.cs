@@ -28,6 +28,8 @@ namespace SpoofyAPI.Data {
 
         public IList<MetaTrack> GetShuffle(ShuffleType type) {
             switch (type) {
+                case ShuffleType.FullRandom:
+                    return FullRandom();
                 case ShuffleType.ArtistSpread:
                     return ArtistSpread();
                 default:
@@ -35,11 +37,24 @@ namespace SpoofyAPI.Data {
             }
         }
 
+        public IList<MetaTrack> FullRandom() {
+            MetaTrack[] arr = new MetaTrack[this.tracks.Count];
+            List<int> positions = Enumerable.Range(0, arr.Length).ToList(); //Unfilled indices left in the playlist
+
+            foreach (MetaTrack t in this.tracks) {
+                int pos = positions.ElementAt(Random.Shared.Next(0, positions.Count));
+                arr[pos] = t;
+                positions.Remove(pos);
+            }
+
+            return arr.ToList();
+        }
+
         public IList<MetaTrack> ArtistSpread() {
             MetaTrack[] arr = new MetaTrack[this.tracks.Count];
             List<int> positions = Enumerable.Range(0, arr.Length).ToList(); //Unfilled indices left in the playlist
 
-            var groupedTracks = tracks.GroupBy(x => x.artist);
+            var groupedTracks = this.tracks.GroupBy(x => x.artist);
             groupedTracks = groupedTracks.OrderByDescending(x => x.Count());
 
             foreach (IGrouping<string, MetaTrack> group in groupedTracks) {
