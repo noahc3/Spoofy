@@ -23,46 +23,10 @@ namespace SpoofyAPI.Controllers {
         }
 
         [HttpGet("login")]
-        public RedirectResult Login([FromServices] IConfiguration configuration, [FromQuery] string redirect_uri) {
-            var loginRequest = new LoginRequest(
-                new Uri($"http://localhost:5003/authentication/callback"), //TODO: dynamically generate this
-                configuration["Spotify:ClientID"],
-                LoginRequest.ResponseType.Code
-            ) {
-                Scope = _scopes,
-                State = redirect_uri.Base64Encode()
-            };
+        public RedirectResult Login([FromServices] IConfiguration configuration, [FromQuery] string redirect_uri, [FromQuery] string client_id, [FromQuery] string state) {
+            // Inject our client keys if not specified
+            if (string.IsNullOrWhiteSpace(client_id)) client_id = configuration["Spotify:CliendId"];
 
-            var uri = loginRequest.ToUri();
-
-            return Redirect(uri.ToString());
-        }
-
-        [HttpGet("callback")]
-        public async Task<RedirectResult> Callback([FromServices] IConfiguration configuration, [FromQuery] string state, [FromQuery] string code) {
-            var origin = state.Base64Decode();
-
-            var response = await new OAuthClient().RequestToken(
-                new AuthorizationCodeTokenRequest(
-                    configuration["Spotify:ClientID"],
-                    configuration["Spotify:ClientSecret"],
-                    code,
-                    new Uri($"http://localhost:5003/authentication/callback")
-                )
-            );
-
-            if (origin.Contains('?')) origin += '&';
-            else origin += '?';
-
-            origin += $"access_token={response.AccessToken}&refresh_token={response.RefreshToken}";
-
-            return Redirect(origin);
-        }
-
-        // Flowless login requires the client to handle the OAuth flow itself, including providing the client ID and secret.
-        // Intended for use with Swagger.
-        [HttpGet("loginflowless")]
-        public RedirectResult LoginFlowless([FromQuery] string redirect_uri, [FromQuery] string client_id, [FromQuery] string state) {
             var loginRequest = new LoginRequest(
                 new Uri(redirect_uri),
                 client_id,
@@ -77,8 +41,12 @@ namespace SpoofyAPI.Controllers {
             return Redirect(uri.ToString());
         }
 
-        [HttpPost("tokenflowless")]
-        public async Task<Dictionary<string, string>> TokenFlowless([FromForm] string redirect_uri, [FromForm] string client_id, [FromForm] string client_secret, [FromForm] string code) {
+        [HttpPost("token")]
+        public async Task<Dictionary<string, string>> Token([FromServices] IConfiguration configuration, [FromForm] string redirect_uri, [FromForm] string client_id, [FromForm] string client_secret, [FromForm] string code) {
+            // Inject our client keys if not specified
+            if (string.IsNullOrWhiteSpace(client_id)) client_id = configuration["Spotify:CliendId"];
+            if (string.IsNullOrWhiteSpace(client_id)) client_secret = configuration["Spotify:ClientSecret"];
+
             var response = await new OAuthClient().RequestToken(
                 new AuthorizationCodeTokenRequest(
                     client_id,
@@ -88,8 +56,9 @@ namespace SpoofyAPI.Controllers {
                 )
             );
 
+            // encrypt our auth data so only we can use it
             return new Dictionary<string, string>() {
-                ["access_token"] = JsonConvert.SerializeObject(response).Base64Encode()
+                ["access_token"] = JsonConvert.SerializeObject(response).Base64Encode().Encrypt(configuration["Spotify:AuthDataKey"])
             };
         }
 

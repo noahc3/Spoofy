@@ -26,8 +26,8 @@ var scheme = new OpenApiSecurityScheme {
     Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" },
     Flows = new OpenApiOAuthFlows {
         AuthorizationCode = new OpenApiOAuthFlow {
-            AuthorizationUrl = new Uri("/authentication/loginflowless", UriKind.Relative),
-            TokenUrl = new Uri("/authentication/tokenflowless", UriKind.Relative)
+            AuthorizationUrl = new Uri("/authentication/login", UriKind.Relative),
+            TokenUrl = new Uri("/authentication/token", UriKind.Relative)
         }
     }
 };

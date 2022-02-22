@@ -10,7 +10,7 @@ namespace SpoofyAPI.Middleware {
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext context, SpotifyClientConfig spotifyClientConfig) {
+        public async Task InvokeAsync(HttpContext context, IConfiguration configuration, SpotifyClientConfig spotifyClientConfig) {
 
             var endpoint = context.Features.Get<IEndpointFeature>()?.Endpoint;
             var attribute = endpoint?.Metadata.GetMetadata<SpotifyAuthAttribute>();
@@ -18,6 +18,7 @@ namespace SpoofyAPI.Middleware {
             if (attribute != null) {
                 AuthorizationCodeTokenResponse resp =
                     context.Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")
+                    .Decrypt(configuration["Spotify:AuthDataKey"])
                     .Base64Decode()
                     .DeserializeFromJson<AuthorizationCodeTokenResponse>();
 
