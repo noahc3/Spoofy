@@ -19,7 +19,6 @@ namespace SpoofyAPI.Middleware {
                 AuthorizationCodeTokenResponse resp =
                     context.Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")
                     .Decrypt(configuration["Spotify:AuthDataKey"])
-                    .Base64Decode()
                     .DeserializeFromJson<AuthorizationCodeTokenResponse>();
 
                 if (resp == null || resp.IsExpired) {

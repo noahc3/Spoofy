@@ -58,7 +58,7 @@ namespace SpoofyAPI.Controllers {
 
             // encrypt our auth data so only we can use it
             return new Dictionary<string, string>() {
-                ["access_token"] = JsonConvert.SerializeObject(response).Base64Encode().Encrypt(configuration["Spotify:AuthDataKey"])
+                ["access_token"] = JsonConvert.SerializeObject(response).Encrypt(configuration["Spotify:AuthDataKey"])
             };
         }
 
