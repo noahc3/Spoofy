@@ -11,3 +11,128 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+html {
+    background-color: #c0c3d1;
+}
+
+#root {
+    background-color: #c0c3d1;
+}
+
+header {
+    text-align: center;
+}
+
+.logo {
+    width: 100%;
+    max-width:800px;
+}
+
+.card-text {
+    font-size:larger
+}
+
+.login-card {
+    text-align:center;
+    padding:10px;
+}
+
+.loading-splash {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background-color: rgba(0, 0, 0, .85);
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.loading-splash .spinner-border {
+    width:55px;
+    height:55px;
+    margin-bottom:1rem;
+}
+
+.container {
+    margin-top:1rem;
+    
+}
+
+.center {
+    text-align: center;
+}
+
+.vertical-center-children {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.btn.btn-wide {
+    width: 100%;
+}
+
+.btn-group-vertical.btn-group-wide {
+    width:100%;
+}
+
+.btn-group-vertical.btn-group-wide .btn {
+    width:100%;
+}
+
+.btn-group.btn-group-wide {
+    display:flex;
+}
+
+.btn-group.btn-group-wide .btn:not(.btn-min) {
+    flex: 1;
+    flex-grow: 1;
+}
+
+.btn-group.btn-group-wide .btn-min {
+    flex-grow:0;
+}
+
+.sharp-corners .btn {
+    border-radius: 0;
+}
+
+.muted {
+    color: #b7b7b7;
+}
+
+.huge-text {
+    font-size: xx-large;
+}
+
+h1.tall-margin {
+    margin-top:2rem;
+    margin-bottom:2rem;
+}
+
+.seamless.card-footer {
+    background-color: inherit;
+    border-top: 0;
+}
+
+.error-box {
+    margin:auto;
+    background-color:lightsteelblue;
+    max-width: 600px;
+    width:100vw;
+}
+
+.error-box pre {
+    margin:0;
+    padding:1rem;
+    max-height: 20rem;
+}
+
+.fail-icon {
+    width:100px;
+    margin-bottom:1rem;
+}

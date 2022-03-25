@@ -6,6 +6,18 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options => {
+    options.AddPolicy(
+        name: "cors",
+        builder => {
+            builder.WithOrigins("http://localhost:3000");
+            builder.WithOrigins("https://spoofy.noahc3.ml");
+            builder.AllowAnyHeader();
+            builder.AllowAnyMethod();
+            builder.AllowCredentials();
+        });
+});
+
 // Add services to the container.
 
 builder.Services.AddHttpContextAccessor();
@@ -41,6 +53,8 @@ builder.Services.AddSwaggerGen(options => {
 // Build app
 
 var app = builder.Build();
+
+app.UseCors("cors");
 
 // Register custom auth middleware
 app.UseMiddleware<SpotifyAuthMiddleware>();

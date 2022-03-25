@@ -23,9 +23,11 @@ namespace SpoofyAPI.Controllers {
         }
 
         [HttpGet("login")]
-        public RedirectResult Login([FromServices] IConfiguration configuration, [FromQuery] string redirect_uri, [FromQuery] string client_id, [FromQuery] string state) {
+        public RedirectResult Login([FromServices] IConfiguration configuration, [FromQuery] string redirect_uri, [FromQuery] string state, [FromQuery] string? client_id = "") {
             // Inject our client keys if not specified
-            if (string.IsNullOrWhiteSpace(client_id)) client_id = configuration["Spotify:CliendId"];
+            if (string.IsNullOrWhiteSpace(client_id)) {
+                client_id = configuration["Spotify:ClientId"];
+            }
 
             var loginRequest = new LoginRequest(
                 new Uri(redirect_uri),
@@ -42,10 +44,10 @@ namespace SpoofyAPI.Controllers {
         }
 
         [HttpPost("token")]
-        public async Task<Dictionary<string, string>> Token([FromServices] IConfiguration configuration, [FromForm] string redirect_uri, [FromForm] string client_id, [FromForm] string client_secret, [FromForm] string code) {
+        public async Task<Dictionary<string, string>> Token([FromServices] IConfiguration configuration, [FromForm] string redirect_uri, [FromForm] string code, [FromForm] string? client_id = "", [FromForm] string? client_secret = "") {
             // Inject our client keys if not specified
-            if (string.IsNullOrWhiteSpace(client_id)) client_id = configuration["Spotify:CliendId"];
-            if (string.IsNullOrWhiteSpace(client_id)) client_secret = configuration["Spotify:ClientSecret"];
+            if (string.IsNullOrWhiteSpace(client_id)) client_id = configuration["Spotify:ClientId"];
+            if (string.IsNullOrWhiteSpace(client_secret)) client_secret = configuration["Spotify:ClientSecret"];
 
             var response = await new OAuthClient().RequestToken(
                 new AuthorizationCodeTokenRequest(

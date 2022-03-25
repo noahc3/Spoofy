@@ -6,7 +6,7 @@ using SpotifyAPI.Web;
 
 namespace SpoofyAPI.Controllers {
     [ApiController]
-    [Route("[controller]")]
+    [Route("playlist")]
     public class PlaylistController : ControllerBase {
 
         private readonly ILogger<PlaylistController> _logger;
@@ -16,7 +16,7 @@ namespace SpoofyAPI.Controllers {
         }
 
         [SpotifyAuth]
-        [HttpGet("GetPlaylists")]
+        [HttpGet("getplaylists")]
         public async Task<IList<MetaPlaylist>> GetPlaylists() {
             var c = HttpContext.GetSpotifyClient();
             var page = await c.Playlists.CurrentUsers();
@@ -33,7 +33,7 @@ namespace SpoofyAPI.Controllers {
         }
 
         [SpotifyAuth]
-        [HttpGet("Shuffle")]
+        [HttpGet("shuffle")]
         public async Task<ShufflePreview> Shuffle([FromQuery] string playlistId, [FromQuery] MetaPlaylist.ShuffleType shuffleType, [FromQuery] bool preview) {
             var c = HttpContext.GetSpotifyClient();
             var playlist = await c.Playlists.Get(playlistId);
@@ -57,7 +57,7 @@ namespace SpoofyAPI.Controllers {
         }
 
         [SpotifyAuth]
-        [HttpPost("ApplyShuffle")]
+        [HttpPost("applyshuffle")]
         public async Task<StatusCodeResult> ApplyShuffle([FromQuery] string playlistId, [FromBody] IList<int> delta) {
             var c = HttpContext.GetSpotifyClient();
             var tracks = await c.PaginateAll(await c.Playlists.GetItems(playlistId));
