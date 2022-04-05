@@ -10,6 +10,7 @@ import * as utils from './utils';
 import * as spoofy from './spoofy-api';
 
 import failIcon from './img/fail.png'
+import GlobalModal from './components/global-modal';
 
 class App extends React.Component {
 
@@ -31,13 +32,10 @@ class App extends React.Component {
 
         /** @type {State} */
         this.state = {
-            ready: false,
             error: undefined
         }
 
-        spoofy.init().then(() => {
-            if (!this.state.error) this.setState({ready: true});
-        });
+        spoofy.init();
     }
 
     handlePreInitError(err) {
@@ -45,6 +43,8 @@ class App extends React.Component {
     }
 
     render() {
+        const ready = spoofy.isInitialized();
+
         if (this.state.error) {
             const err = this.state.error;
             const copyText = "```\n" + JSON.stringify(err,null,4) + "\n```";
@@ -70,20 +70,10 @@ class App extends React.Component {
                     </div>
                 </main>
             );
-        } else if (!this.state.ready) {
-            return (
-                <main>
-                    <div className="loading-splash">
-                        <div className="center">
-                            <Spinner animation="border" variant="light" />
-                            <h3>Loading</h3>
-                        </div>
-                    </div>
-                </main>
-            )
         } else {
             return (
                 <main>
+                    <GlobalModal/>
                     <Container>
                         <BrowserRouter>
                             <Routes>

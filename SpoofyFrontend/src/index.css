@@ -12,30 +12,20 @@ code {
     monospace;
 }
 
-html {
-    background-color: #c0c3d1;
-}
-
-#root {
-    background-color: #c0c3d1;
-}
-
 header {
     text-align: center;
 }
 
 .logo {
-    width: 100%;
     max-width:800px;
+    max-height:30vh;
+    width: auto;
+    height:auto;
+    filter: drop-shadow(0 0 0.4rem cyan);
 }
 
-.card-text {
+.large-text .card-text {
     font-size:larger
-}
-
-.login-card {
-    text-align:center;
-    padding:10px;
 }
 
 .loading-splash {
@@ -59,11 +49,16 @@ header {
 
 .container {
     margin-top:1rem;
+    margin-bottom:1rem;
     
 }
 
 .center {
     text-align: center;
+}
+
+.modal-title.center {
+    width:100%;
 }
 
 .vertical-center-children {
@@ -135,4 +130,95 @@ h1.tall-margin {
 .fail-icon {
     width:100px;
     margin-bottom:1rem;
+}
+
+.flexbox {
+    display:flex;
+}
+
+.flexbox .flexcol {
+    flex: 1;
+    flex-grow: 1;
+    margin: auto 10px;
+}
+
+.flexbox .flexcol-min {
+    flex-grow:0;
+    margin: auto 0 auto 10px;
+}
+
+.text-checkbox {
+    font-size: xx-large;
+    line-height:0;
+    margin: auto;
+}
+
+.col .full-height {
+    height: 100%;
+}
+
+.card .full-height {
+    height: 100%;
+}
+
+.card .full-height .flexbox {
+    height: 100%;
+}
+
+.clickable:hover {
+    cursor: pointer;
+}
+
+.playlist-card .card-footer {
+    background-color: unset;
+    border-top:unset;
+    padding: 0;
+}
+
+.playlist-card .card-body {
+    margin: auto;
+}
+
+.playlist-card .card-title {
+    margin: auto;
+    height:100%;
+    text-align: center;
+}
+
+.playlist-card {
+    padding:4px;
+}
+
+.global-modal .modal-dialog {
+    max-width:700px;
+}
+
+.global-modal .table {
+    height:200px;
+    max-height:200px;
+    display: block;
+}
+
+.cover-thumbnail {
+    max-width:40px;
+}
+
+.modal .tracklist {
+    max-height:55vh;
+    height:600px;
+    overflow-y: scroll;
+}
+
+a.nostyle:link {
+    text-decoration: inherit;
+    color: inherit;
+}
+
+a.nostyle:visited {
+    text-decoration: inherit;
+    color: inherit;
+}
+
+a.nostyle:hover {
+    text-decoration: underline;
 }
