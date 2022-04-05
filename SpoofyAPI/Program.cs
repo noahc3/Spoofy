@@ -75,6 +75,10 @@ if (app.Environment.IsDevelopment()) {
     });
 }
 
+Console.WriteLine(builder.Configuration["Spotify:ClientId"]);
+Console.WriteLine(builder.Configuration["Spotify:ClientSecret"]);
+Console.WriteLine(builder.Configuration["Spotify:AuthDataKey"]);
+
 app.UseAuthorization();
 
 app.MapControllers();

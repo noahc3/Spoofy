@@ -14,7 +14,7 @@ namespace SpoofyAPI {
         }
 
         public static T DeserializeFromJson<T>(this string json) {
-            return JsonConvert.DeserializeObject<T>(json);
+            return JsonConvert.DeserializeObject<T>(json)!;
         }
 
         public static SpotifyClient GetSpotifyClient(this HttpContext context) {

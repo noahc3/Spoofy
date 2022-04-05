@@ -18,11 +18,11 @@ namespace SpoofyAPI.Data {
         }
 
         public MetaPlaylist(FullPlaylist fp) {
-            this.Id = fp.Id;
-            this.Name = fp.Name;
-            this.Description = fp.Description;
-            this.PlaylistUrl = fp.ExternalUrls["spotify"];
-            this.ImageUrl = fp.Images.First().Url;
+            this.Id = fp.Id!;
+            this.Name = fp.Name!;
+            this.Description = fp.Description!;
+            this.PlaylistUrl = fp.ExternalUrls!["spotify"];
+            this.ImageUrl = fp.Images!.First().Url;
         }
 
         public void PopulateTracks(IList<PlaylistTrack<IPlayableItem>> trackList) {
