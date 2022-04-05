@@ -20,16 +20,18 @@ jobs:
         node-version: 13.x
     
     - name: Install NPM packages
+      working-directory: ./SpoofyFrontend
       run: npm ci
     
     - name: Build project
+      working-directory: ./SpoofyFrontend
       run: CI=false npm run build
 
     - name: Upload production-ready build files
       uses: actions/upload-artifact@v2
       with:
         name: production-files
-        path: ./build
+        path: ./SpoofyFrontend/build
   
   deploy:
     name: Deploy
