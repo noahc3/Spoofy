@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { Spinner, Container, Button, ButtonGroup, Anchor } from 'react-bootstrap';
+import { Container, Button, ButtonGroup, Anchor } from 'react-bootstrap';
 import './index.css';
 import Home from './pages/home';
 import Callback from './pages/callback';
@@ -43,8 +43,6 @@ class App extends React.Component {
     }
 
     render() {
-        const ready = spoofy.isInitialized();
-
         if (this.state.error) {
             const err = this.state.error;
             const copyText = "```\n" + JSON.stringify(err,null,4) + "\n```";

@@ -72,64 +72,64 @@ async function fetchJson(endpoint, authenticate) {
     });;
 }
 
-async function fetchString(endpoint) {
-    return fetch(endpoint).then(res => {
-        if (res.ok) return res.text();
-        else {
-            return res.text().then(msg =>  {
-                let rawMessage = msg;
-                if (msg.includes("<html>")) msg = res.statusText;
-                return new ApiError(res.status, msg, "fetchString", rawMessage, res.url);
-            });
-        }
-    }).catch(err => {
-        console.log(err);
-        return new ApiError(-2, err.message, "fetchString", err.stack, endpoint);
-    });
-}
+// async function fetchString(endpoint) {
+//     return fetch(endpoint).then(res => {
+//         if (res.ok) return res.text();
+//         else {
+//             return res.text().then(msg =>  {
+//                 let rawMessage = msg;
+//                 if (msg.includes("<html>")) msg = res.statusText;
+//                 return new ApiError(res.status, msg, "fetchString", rawMessage, res.url);
+//             });
+//         }
+//     }).catch(err => {
+//         console.log(err);
+//         return new ApiError(-2, err.message, "fetchString", err.stack, endpoint);
+//     });
+// }
 
-async function postAndFetchString(endpoint, body) {
-    const opts = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-    };
+// async function postAndFetchString(endpoint, body) {
+//     const opts = {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify(body)
+//     };
+// 
+//     return fetch(endpoint, opts).then(res => {
+//         if (res.ok) return res.text();
+//         else {
+//             return res.text().then(msg =>  {
+//                 let rawMessage = msg;
+//                 if (msg.includes("<html>")) msg = res.statusText;
+//                 return new ApiError(res.status, msg, "postAndFetchString", rawMessage, res.url);
+//             });
+//         }
+//     }).catch(err => {
+//         return new ApiError(-2, err.message, "postAndFetchString", err.stack, endpoint);
+//     });;
+// }
 
-    return fetch(endpoint, opts).then(res => {
-        if (res.ok) return res.text();
-        else {
-            return res.text().then(msg =>  {
-                let rawMessage = msg;
-                if (msg.includes("<html>")) msg = res.statusText;
-                return new ApiError(res.status, msg, "postAndFetchString", rawMessage, res.url);
-            });
-        }
-    }).catch(err => {
-        return new ApiError(-2, err.message, "postAndFetchString", err.stack, endpoint);
-    });;
-}
-
-async function postAndFetchJson(endpoint, body, authenticate) {
-    const opts = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-    };
-    if (authenticate && authBlob && authBlob.length > 0) opts.headers.Authorization = 'Bearer ' + authBlob;
-
-    return fetch(endpoint, opts).then(res => {
-        if (res.ok) return res.json();
-        else {
-            return res.text().then(msg =>  {
-                let rawMessage = msg;
-                if (msg.includes("<html>")) msg = res.statusText;
-                return new ApiError(res.status, msg, "postAndFetchJson", rawMessage, res.url);
-            });
-        }
-    }).catch(err => {
-        return new ApiError(-2, err.message, "postAndFetchJson", err.stack, endpoint);
-    });;
-}
+// async function postAndFetchJson(endpoint, body, authenticate) {
+//     const opts = {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify(body)
+//     };
+//     if (authenticate && authBlob && authBlob.length > 0) opts.headers.Authorization = 'Bearer ' + authBlob;
+// 
+//     return fetch(endpoint, opts).then(res => {
+//         if (res.ok) return res.json();
+//         else {
+//             return res.text().then(msg =>  {
+//                 let rawMessage = msg;
+//                 if (msg.includes("<html>")) msg = res.statusText;
+//                 return new ApiError(res.status, msg, "postAndFetchJson", rawMessage, res.url);
+//             });
+//         }
+//     }).catch(err => {
+//         return new ApiError(-2, err.message, "postAndFetchJson", err.stack, endpoint);
+//     });;
+// }
 
 async function postJson(endpoint, body, authenticate) {
     const opts = {
@@ -333,7 +333,7 @@ export async function init() {
     let prof = await fetchJson(ENDPOINT_AUTH_PROFILE, true);
 
     if (prof.error) {
-        if (prof.code == 401) {
+        if (prof.code === 401) {
             authenticated = false;
         } else {
             handleError(prof);

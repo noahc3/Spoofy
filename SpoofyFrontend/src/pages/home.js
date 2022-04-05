@@ -1,7 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Anchor, Button, Card, CardGroup, Col, Container, Row, Spinner } from 'react-bootstrap';
-import { RiLogoutBoxRLine } from 'react-icons/ri';
+import { Anchor, Button, Card, Col, Container, Row, Spinner } from 'react-bootstrap';
 import logo from '../img/logo.png'
 import * as spoofy from '../spoofy-api';
 import Unauthenticated from '../components/unauthenticated';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Anchor, Button, CardImg, Card, Row, Col, ButtonGroup } from 'react-bootstrap';
+import { Button, CardImg, Card, ButtonGroup } from 'react-bootstrap';
 import * as spoofy from '../spoofy-api';
 
 export default class PlaylistCard extends React.Component {

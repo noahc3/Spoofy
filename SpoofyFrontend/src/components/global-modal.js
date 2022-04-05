@@ -1,6 +1,5 @@
 import React from 'react';
-import { Button, ButtonGroup, Modal, Table, Spinner, Row, Col } from 'react-bootstrap';
-import { IoIosCheckmarkCircleOutline } from 'react-icons/io';
+import { Button, ButtonGroup, Modal, Spinner } from 'react-bootstrap';
 
 import * as spoofy from '../spoofy-api';
 
@@ -112,7 +111,7 @@ export default class GlobalModal extends React.Component {
                         {index}
                     </div>
                     <div className='flexcol-min'>
-                        {<img className='cover-thumbnail' src={track.imageUrl}/>}
+                        {<img className='cover-thumbnail' alt="Track Cover" src={track.imageUrl}/>}
                     </div>
                     <div className='flexcol'>
                         <div>{track.title}</div>
