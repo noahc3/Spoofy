@@ -1,5 +1,5 @@
 const FRONTEND_URL = window.location.origin;
-const BACKEND_URL = "https://api.spoofy.noahc3.ml";
+const BACKEND_URL = "https://spoofyapi.noahc3.ml";
 
 const FRONTEND_AUTH_CALLBACK = FRONTEND_URL + "/callback";
 
