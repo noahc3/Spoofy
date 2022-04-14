@@ -26,7 +26,7 @@ The backend server requires Spotify application credentials to interact with the
 * Swagger/OpenAPI: `http://localhost:5003/swagger/oauth2-redirect.html`
 
 
-The backend server also needs a 256bit key to encrypt and store the users authentication token within their browser. You should generate a random 16 character ASCII string for this purpose.
+The backend server also needs a 128bit key to encrypt and store the users authentication token within their browser. You should generate a random 16 character ASCII string for this purpose.
 
 **Development Mode**
 
