@@ -78,11 +78,38 @@ jobs:
       with:
         name: spoofyapi-win-x64
         path: ./app-win-x64
+
+  publish-docker:
+    name: Publish Docker
+    needs: build-backend
+    runs-on: ubuntu-latest
+    on: workflow_dispatch
+    if: github.ref == 'refs/heads/master'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build Docker container
+      run: |
+        docker build -t ghcr.io/noahc3/spoofy:latest
+        docker run ghcr.io/noahc3/spoofy:latest
+    
+    - name: Publish Docker container
+      run: docker push ghcr.io/noahc3/spoofy:latest
   
   deploy-pages:
     name: Deploy Pages
     needs: build-frontend
     runs-on: ubuntu-latest
+    on: workflow-dispatch
     if: github.ref == 'refs/heads/master'
     
     steps:
