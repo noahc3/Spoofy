@@ -47,38 +47,41 @@ jobs:
         dotnet-version: 6.0.*
       
     - name: Build SpoofyAPI (Linux x64)
-      run: dotnet restore -r linux-x64 /p:PublishReadyToRun=true
-      run: dotnet publish -c Release -r linux-x64 -o /app-linux-x64 --self-contained true --no-restore /p:PublishTrimmed=true /p:PublishReadyToRun=true /p:PublishSingleFile=true
+      run: |
+        dotnet restore -r linux-x64 /p:PublishReadyToRun=true
+        dotnet publish -c Release -r linux-x64 -o ./app-linux-x64 --self-contained true --no-restore /p:PublishReadyToRun=true /p:PublishSingleFile=true
       
     - name: Build SpoofyAPI (Linux x64 musl)
-      run: dotnet restore -r linux-musl-x64 /p:PublishReadyToRun=true
-      run: dotnet publish -c Release -r linux-musl-x64 -o /app-linux-musl-x64 --self-contained true --no-restore /p:PublishTrimmed=true /p:PublishReadyToRun=true /p:PublishSingleFile=true
+      run: |
+        dotnet restore -r linux-musl-x64 /p:PublishReadyToRun=true
+        dotnet publish -c Release -r linux-musl-x64 -o ./app-linux-musl-x64 --self-contained true --no-restore /p:PublishReadyToRun=true /p:PublishSingleFile=true
       
     - name: Build SpoofyAPI (Windows x64)
-      run: dotnet restore -r win-x64 /p:PublishReadyToRun=true
-      run: dotnet publish -c Release -r win-x64 -o /app-win-x64 --self-contained true --no-restore /p:PublishTrimmed=true /p:PublishReadyToRun=true /p:PublishSingleFile=true
+      run: |
+        dotnet restore -r win-x64 /p:PublishReadyToRun=true
+        dotnet publish -c Release -r win-x64 -o ./app-win-x64 --self-contained true --no-restore /p:PublishReadyToRun=true /p:PublishSingleFile=true
       
     - name: Upload backend build artifacts (Linux x64)
       uses: actions/upload-artifact@v2
       with:
         name: spoofyapi-linux-x64
-        path: /app-linux-x64
+        path: ./app-linux-x64
         
     - name: Upload backend build artifacts (Linux x64 musl)
       uses: actions/upload-artifact@v2
       with:
         name: spoofyapi-linux-musl-x64
-        path: /app-linux-musl-x64
+        path: ./app-linux-musl-x64
         
     - name: Upload backend build artifacts (Windows x64)
       uses: actions/upload-artifact@v2
       with:
         name: spoofyapi-win-x64
-        path: /app-win-x64
+        path: ./app-win-x64
   
   deploy-pages:
     name: Deploy Pages
-    needs: build
+    needs: build-frontend
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
     
