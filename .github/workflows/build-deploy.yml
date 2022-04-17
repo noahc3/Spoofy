@@ -106,7 +106,8 @@ jobs:
     - name: Build Docker container
       run: |
         cd .docker
-        docker build -t ghcr.io/noahc3/spoofyapi:$GITHUB_SHA --no-cache .
+        docker build -t ghcr.io/noahc3/spoofyapi:latest -t ghcr.io/noahc3/spoofyapi:$GITHUB_SHA --no-cache .
+        docker run ghcr.io/noahc3/spoofyapi:$GITHUB_SHA
     
     - name: Publish Docker container
       run: docker push ghcr.io/noahc3/spoofyapi:$GITHUB_SHA
