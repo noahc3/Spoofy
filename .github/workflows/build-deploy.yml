@@ -83,7 +83,7 @@ jobs:
     name: Publish Docker
     needs: build-backend
     runs-on: ubuntu-latest
-    environment: Production
+    environment: Publish Docker
     if: github.ref == 'refs/heads/master'
 
     steps:
@@ -116,7 +116,7 @@ jobs:
     name: Deploy Pages
     needs: build-frontend
     runs-on: ubuntu-latest
-    environment: Production
+    environment: Deploy Pages
     if: github.ref == 'refs/heads/master'
     
     steps:
