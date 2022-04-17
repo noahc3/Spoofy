@@ -106,7 +106,7 @@ jobs:
     - name: Build Docker container
       run: |
         cd .docker
-        docker build -t ghcr.io/noahc3/spoofy:latest
+        docker build -t ghcr.io/noahc3/spoofy:latest --no-cache .
         docker run ghcr.io/noahc3/spoofy:latest
     
     - name: Publish Docker container
