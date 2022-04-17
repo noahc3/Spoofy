@@ -83,12 +83,18 @@ jobs:
     name: Publish Docker
     needs: build-backend
     runs-on: ubuntu-latest
-    on: workflow_dispatch
+    environment: Production
     if: github.ref == 'refs/heads/master'
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+
+    - name: Download artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: spooofyapi-linux-musl-x64
+        path: ./.docker/app-linux-musl-x64
 
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v1
@@ -99,6 +105,7 @@ jobs:
 
     - name: Build Docker container
       run: |
+        cd .docker
         docker build -t ghcr.io/noahc3/spoofy:latest
         docker run ghcr.io/noahc3/spoofy:latest
     
@@ -109,7 +116,7 @@ jobs:
     name: Deploy Pages
     needs: build-frontend
     runs-on: ubuntu-latest
-    on: workflow-dispatch
+    environment: Production
     if: github.ref == 'refs/heads/master'
     
     steps:
