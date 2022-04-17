@@ -93,7 +93,7 @@ jobs:
     - name: Download artifact
       uses: actions/download-artifact@v2
       with:
-        name: spooofyapi-linux-musl-x64
+        name: spoofyapi-linux-musl-x64
         path: ./.docker/app-linux-musl-x64
 
     - name: Login to GitHub Container Registry
