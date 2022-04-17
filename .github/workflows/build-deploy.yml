@@ -83,7 +83,7 @@ jobs:
     name: Publish Docker
     needs: build-backend
     runs-on: ubuntu-latest
-    environment: Publish Docker
+    environment: Deploy Backend
     if: github.ref == 'refs/heads/master'
 
     steps:
@@ -106,10 +106,10 @@ jobs:
     - name: Build Docker container
       run: |
         cd .docker
-        docker build -t ghcr.io/noahc3/spoofy:latest --no-cache .
+        docker build -t ghcr.io/noahc3/spoofyapi:latest --no-cache .
     
     - name: Publish Docker container
-      run: docker push ghcr.io/noahc3/spoofy:latest
+      run: docker push ghcr.io/noahc3/spoofyapi:latest
   
   deploy-pages:
     name: Deploy Pages
