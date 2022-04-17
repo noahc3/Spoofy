@@ -6,8 +6,8 @@ on:
       - master
 
 jobs:
-  build:
-    name: Build
+  build-frontend:
+    name: Build Frontend
     runs-on: ubuntu-latest
     
     steps:
@@ -32,9 +32,52 @@ jobs:
       with:
         name: production-files
         path: ./SpoofyFrontend/build
+        
+  build-backend:
+    name: Build Backend
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    
+    - name: Install .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.*
+      
+    - name: Build SpoofyAPI (Linux x64)
+      run: dotnet restore -r linux-x64 /p:PublishReadyToRun=true
+      run: dotnet publish -c Release -r linux-x64 -o /app-linux-x64 --self-contained true --no-restore /p:PublishTrimmed=true /p:PublishReadyToRun=true /p:PublishSingleFile=true
+      
+    - name: Build SpoofyAPI (Linux x64 musl)
+      run: dotnet restore -r linux-musl-x64 /p:PublishReadyToRun=true
+      run: dotnet publish -c Release -r linux-musl-x64 -o /app-linux-musl-x64 --self-contained true --no-restore /p:PublishTrimmed=true /p:PublishReadyToRun=true /p:PublishSingleFile=true
+      
+    - name: Build SpoofyAPI (Windows x64)
+      run: dotnet restore -r win-x64 /p:PublishReadyToRun=true
+      run: dotnet publish -c Release -r win-x64 -o /app-win-x64 --self-contained true --no-restore /p:PublishTrimmed=true /p:PublishReadyToRun=true /p:PublishSingleFile=true
+      
+    - name: Upload backend build artifacts (Linux x64)
+      uses: actions/upload-artifact@v2
+      with:
+        name: spoofyapi-linux-x64
+        path: /app-linux-x64
+        
+    - name: Upload backend build artifacts (Linux x64 musl)
+      uses: actions/upload-artifact@v2
+      with:
+        name: spoofyapi-linux-musl-x64
+        path: /app-linux-musl-x64
+        
+    - name: Upload backend build artifacts (Windows x64)
+      uses: actions/upload-artifact@v2
+      with:
+        name: spoofyapi-win-x64
+        path: /app-win-x64
   
-  deploy:
-    name: Deploy
+  deploy-pages:
+    name: Deploy Pages
     needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
